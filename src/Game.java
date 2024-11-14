@@ -1,13 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game extends JComponent {
+public class Game extends JComponent  {
     static public final int boardSize=5;
     static public final int r=50;
     static public final int offset=10;
     List<List<Tile>> tiles;
+
 
     public Game() {
         this.tiles=new ArrayList<>();
@@ -30,6 +32,15 @@ public class Game extends JComponent {
                 g2.drawPolygon(this.tiles.get(i).get(j).getPolygon());
                 g2.setColor(this.tiles.get(i).get(j).getState().getColor());
                 g2.fillPolygon(this.tiles.get(i).get(j).getPolygon());
+            }
+        }
+    }
+
+    public void mouseClicked(MouseEvent e) {
+        for(int i=0;i<boardSize;i++){
+            for(int j=0;j<boardSize;j++){
+                Tile tmp = tiles.get(i).get(j);
+                tmp.nextRound(tmp.getPolygon().contains(e.getX(),e.getY()));
             }
         }
     }
