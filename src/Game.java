@@ -16,8 +16,9 @@ public class Game extends JComponent  {
         for(int i=0;i<boardSize;i++){
             List<Tile> tileRow=new ArrayList<>();
             for(int j=0;j<boardSize;j++){
-                int nextValX=2*j*(r+offset)+i%2*(r+offset/2);
-                int nextValY=i*(int)(r+offset+Math.tan(Math.PI/6)*r);
+                int a=(int)Math.sqrt(Math.pow(r,2)-Math.pow(((double)r)/2,2));
+                int nextValX=j*(2*a+offset)+a+i%2*(a+offset/2);
+                int nextValY=i*((int)(1.5*r+Math.sqrt(Math.pow(offset,2)-Math.pow(((double)offset/2),2))));
                 tileRow.add(new Tile(100+nextValX,100+nextValY,r));
             }
             this.tiles.add(tileRow);
@@ -28,10 +29,13 @@ public class Game extends JComponent  {
         Graphics2D g2 = (Graphics2D) g;
         for(int i=0;i<boardSize;i++){
             for(int j=0;j<boardSize;j++){
+                Rectangle bounds=this.tiles.get(i).get(j).getBounds();
                 g2.setColor(Color.black);
-                g2.drawPolygon(this.tiles.get(i).get(j).getPolygon());
+                g2.drawPolygon(this.tiles.get(i).get(j));
                 g2.setColor(this.tiles.get(i).get(j).getState().getColor());
-                g2.fillPolygon(this.tiles.get(i).get(j).getPolygon());
+                g2.fillPolygon(this.tiles.get(i).get(j));
+                //g2.setColor(Color.red);
+                //g2.drawRect(bounds.x,bounds.y,bounds.width,bounds.height);
             }
         }
     }
@@ -40,7 +44,7 @@ public class Game extends JComponent  {
         for(int i=0;i<boardSize;i++){
             for(int j=0;j<boardSize;j++){
                 Tile tmp = tiles.get(i).get(j);
-                tmp.nextRound(tmp.getPolygon().contains(e.getX(),e.getY()));
+                tmp.nextRound(tmp.containsPoint(e.getX(),e.getY()));
             }
         }
     }

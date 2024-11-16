@@ -12,7 +12,7 @@ public class Frame implements MouseListener {
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(g);
-        frame.addMouseListener(this);
+        frame.getContentPane().addMouseListener(this);
         frame.setVisible(true);
     }
 
