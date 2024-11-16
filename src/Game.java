@@ -11,8 +11,7 @@ public class Game extends JComponent  {
     List<List<Tile>> tiles;
 
 
-    public Game(Difficulty difficulty) {
-        State.setDifficulty(difficulty);
+    public Game() {
         this.tiles=new ArrayList<>();
         for(int i=0;i<boardSize;i++){
             List<Tile> tileRow=new ArrayList<>();
@@ -26,11 +25,13 @@ public class Game extends JComponent  {
         }
     }
 
-    public void paint(Graphics g) {
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         for(int i=0;i<boardSize;i++){
             for(int j=0;j<boardSize;j++){
-                Rectangle bounds=this.tiles.get(i).get(j).getBounds();
+                //Rectangle bounds=this.tiles.get(i).get(j).getBounds();
                 g2.setColor(Color.black);
                 g2.drawPolygon(this.tiles.get(i).get(j));
                 g2.setColor(this.tiles.get(i).get(j).getState().getColor());

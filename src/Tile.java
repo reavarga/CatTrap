@@ -34,22 +34,17 @@ public class Tile extends Polygon{
         coordsY[3] = middlePointY-r;
         coordsY[4] = middlePointY-r/2;
         coordsY[5] = middlePointY+r/2;
-
+        System.out.println("Tile Coordinates:");
+        for (int i = 0; i < coordsX.length; i++) {
+            System.out.println("x: " + coordsX[i] + ", y: " + coordsY[i]);
+        }
         for(int i=0;i<6;i++){
           this.addPoint(coordsX[i], coordsY[i]);
         }
     }
 
-    private double triangleArea(int x1, int y1, int x2, int y2, int x3, int y3){
-        return Math.abs(((double)(x1*(y2-y3) + x2*(y3-y1) + x3*(y1-y2)))/2.0);
-    }
-
-
-
     public boolean containsPoint(int x, int y) {
         for(int i=0;i<6;i++){
-            double A=triangleArea(xpoints[i],ypoints[i], xpoints[(i+1)%6], ypoints[(i+1)%6], middlePointX, middlePointY);
-
             double denominator = ((ypoints[(i+1)%6] - middlePointY)*(xpoints[i] - middlePointX) + (middlePointX - xpoints[(i+1)%6])*(ypoints[i] - middlePointY));
             double a = ((ypoints[(i+1)%6] - middlePointY)*(x - middlePointX) + (middlePointX - xpoints[(i+1)%6])*(y - middlePointY)) / denominator;
             double b = ((middlePointY - ypoints[i])*(x - middlePointX) + (xpoints[i] - middlePointX)*(y - middlePointY)) / denominator;
@@ -76,11 +71,11 @@ public class Tile extends Polygon{
         if(this.state != State.FINAL) {
             if (clicked) {
                 if(!(State.getDifficulty()==Difficulty.HARDER && this.state==State.THIRD)) {
-                    int nextState = (this.state.ordinal() + 1) % State.availableValues().length;
+                    int nextState = (this.state.ordinal() + 1 + State.availableValues().length) % State.availableValues().length;
                     this.state = State.availableValues()[nextState];
                 }
             }else if(this.state != State.FIRST) {
-                int nextState = (this.state.ordinal() - 1) % State.availableValues().length;
+                int nextState = (this.state.ordinal() - 1 + State.availableValues().length) % State.availableValues().length;
                 this.state = State.availableValues()[nextState];
             }
         }
