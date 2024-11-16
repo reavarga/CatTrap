@@ -11,7 +11,8 @@ public class Game extends JComponent  {
     List<List<Tile>> tiles;
 
 
-    public Game() {
+    public Game(Difficulty difficulty) {
+        State.setDifficulty(difficulty);
         this.tiles=new ArrayList<>();
         for(int i=0;i<boardSize;i++){
             List<Tile> tileRow=new ArrayList<>();

@@ -7,10 +7,14 @@ public class Frame implements MouseListener {
     private JFrame frame;
 
     Frame(){
-        this.g = new Game();
         this.frame = new JFrame("Frame");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+
+        //game start
+        this.g = new Game(Difficulty.HARD);
         frame.add(g);
         frame.getContentPane().addMouseListener(this);
         frame.setVisible(true);

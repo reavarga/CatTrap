@@ -75,11 +75,13 @@ public class Tile extends Polygon{
     public void nextRound(boolean clicked){
         if(this.state != State.FINAL) {
             if (clicked) {
-                int nextState = (this.state.ordinal() + 1) % State.values().length;
-                this.state = State.values()[nextState];
+                if(!(State.getDifficulty()==Difficulty.HARDER && this.state==State.THIRD)) {
+                    int nextState = (this.state.ordinal() + 1) % State.availableValues().length;
+                    this.state = State.availableValues()[nextState];
+                }
             }else if(this.state != State.FIRST) {
-                int nextState = (this.state.ordinal() - 1) % State.values().length;
-                this.state = State.values()[nextState];
+                int nextState = (this.state.ordinal() - 1) % State.availableValues().length;
+                this.state = State.availableValues()[nextState];
             }
         }
     }
