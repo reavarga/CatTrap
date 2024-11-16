@@ -24,12 +24,18 @@ public class Frame extends JPanel implements MouseListener {
         JButton mediumButton = new JButton("Medium");
         JButton hardButton = new JButton("Hard");
         JButton harderButton = new JButton("Harder");
-
+        JPanel panel1=new JPanel(new BorderLayout(8,8));
+        JPanel panel2=new JPanel(new BorderLayout(8,8));
+        JPanel bigpanel=new JPanel();
         //adding buttons to frame
-        this.add(easyButton);
-        this.add(mediumButton);
-        this.add(hardButton);
-        this.add(harderButton);
+        panel1.add(easyButton,BorderLayout.NORTH);
+        panel1.add(mediumButton,BorderLayout.SOUTH);
+        panel2.add(hardButton, BorderLayout.NORTH);
+        panel2.add(harderButton,BorderLayout.SOUTH);
+        bigpanel.add(panel1,BorderLayout.CENTER);
+        bigpanel.add(panel2,BorderLayout.CENTER);
+        this.add(bigpanel,BorderLayout.CENTER);
+
 
         //callbacks
         easyButton.addActionListener(new ActionListener() {

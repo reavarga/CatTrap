@@ -7,7 +7,7 @@ import java.util.List;
 public class Game extends JComponent  {
     static public final int boardSize=5;
     static public final int r=50;
-    static public final int offset=10;
+    static public final int offset=7;
     List<List<Tile>> tiles;
 
 
