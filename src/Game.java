@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game extends JComponent  {
-    static public final int boardSize=5;
-    static public final int r=50;
+    static public final int boardSize=11;
+    static public final int r=25;
     static public final int offset=7;
     List<List<Tile>> tiles;
 
@@ -32,7 +32,7 @@ public class Game extends JComponent  {
         for(int i=0;i<boardSize;i++){
             for(int j=0;j<boardSize;j++){
                 //Rectangle bounds=this.tiles.get(i).get(j).getBounds();
-                g2.setColor(Color.black);
+                g2.setColor(Color.white);
                 g2.drawPolygon(this.tiles.get(i).get(j));
                 g2.setColor(this.tiles.get(i).get(j).getState().getColor());
                 g2.fillPolygon(this.tiles.get(i).get(j));

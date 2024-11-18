@@ -4,8 +4,8 @@ import javax.swing.JComponent;
 
 public class Tile extends Polygon{
     private final int r; //atlo
-    private final int middlePointX, middlePointY;
-    State state;
+    private final int middlePointX, middlePointY; //kozeppontok
+    State state; //allapot(szin)
 
 /*    public Tile() {
         this.r=0;
@@ -17,7 +17,7 @@ public class Tile extends Polygon{
         this.middlePointX = middlePointX;
         this.middlePointY = middlePointY;
         this.r = r;
-        this.state = State.FIRST;
+        this.state = State.FIRST; //a legvilagosabb
         int [] coordsX = new int[6];
         int [] coordsY = new int[6];
 

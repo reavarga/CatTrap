@@ -10,7 +10,7 @@ public class Frame extends JPanel implements MouseListener {
     private JFrame frame;
 
     Frame(){
-        this.frame = new JFrame("Cat Trap");
+        this.frame = new JFrame("Penguin Trap");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(this);
@@ -23,19 +23,31 @@ public class Frame extends JPanel implements MouseListener {
         JButton easyButton = new JButton("Easy");
         JButton mediumButton = new JButton("Medium");
         JButton hardButton = new JButton("Hard");
-        JButton harderButton = new JButton("Harder");
-        JPanel panel1=new JPanel(new BorderLayout(8,8));
-        JPanel panel2=new JPanel(new BorderLayout(8,8));
-        JPanel bigpanel=new JPanel();
+        JButton extremeButton = new JButton("Extreme");
+    
+        
         //adding buttons to frame
-        panel1.add(easyButton,BorderLayout.NORTH);
-        panel1.add(mediumButton,BorderLayout.SOUTH);
-        panel2.add(hardButton, BorderLayout.NORTH);
-        panel2.add(harderButton,BorderLayout.SOUTH);
-        bigpanel.add(panel1,BorderLayout.CENTER);
-        bigpanel.add(panel2,BorderLayout.CENTER);
-        this.add(bigpanel,BorderLayout.CENTER);
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        buttonPanel.add(easyButton);
+        buttonPanel.add(mediumButton);
+        buttonPanel.add(hardButton);
+        buttonPanel.add(extremeButton);
+        buttonPanel.setBorder(BorderFactory.createBevelBorder(0));
+        buttonPanel.setPreferredSize(new Dimension(400,200));
+        JPanel wrapButtons = new JPanel();
+        wrapButtons.setLayout(new FlowLayout());
+        wrapButtons.add(buttonPanel);
+        this.setLayout(new BorderLayout());
+        this.add(wrapButtons,BorderLayout.SOUTH);
 
+        //adding the picture
+        ImageIcon originalIcon = new ImageIcon("C:/Users/Rea/Downloads/CatTrap/Penguin Trap.png");
+        Image scaledImage = originalIcon.getImage().getScaledInstance(400, 300, Image.SCALE_SMOOTH);
+        ImageIcon resizedIcon = new ImageIcon(scaledImage);
+        JLabel imageLabel = new JLabel(resizedIcon); 
+        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        imageLabel.setVerticalAlignment(SwingConstants.CENTER);
+        this.add(imageLabel, BorderLayout.CENTER);
 
         //callbacks
         easyButton.addActionListener(new ActionListener() {
@@ -65,7 +77,7 @@ public class Frame extends JPanel implements MouseListener {
         });
 
 
-        harderButton.addActionListener(new ActionListener() {
+        extremeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 State.setDifficulty(Difficulty.HARDER);
