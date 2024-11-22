@@ -33,9 +33,6 @@ public class Frame extends JPanel implements MouseListener {
 
         // adding buttons to frame
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        JPanel loadPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        loadPanel.add(loadOldGameButton);
-        buttonPanel.add(loadPanel);
         buttonPanel.add(textAboutAlgorithm);
         buttonPanel.add(randomButton);
         buttonPanel.add(shortestButton);
