@@ -9,47 +9,58 @@ public class Frame extends JPanel implements MouseListener {
     private Game g;
     private JFrame frame;
 
-    Frame(){
+    Frame() {
         this.frame = new JFrame("Penguin Trap");
-        frame.setSize(800, 600);
+        frame.setSize(800, 650);
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(this);
-        //start screen
+        // start screen
         drawStartScreen();
     }
 
-    private void drawStartScreen(){
-        //frame.setLayout(new FlowLayout());
+    private void drawStartScreen() {
+        // frame.setLayout(new FlowLayout());
+        JButton loadOldGameButton= new JButton("Load an older game!");
+        JTextField textAboutAlgorithm = new JTextField("Choose algorithm for the Penguin!");
+        JRadioButton randomButton = new JRadioButton("Random", true);
+        JRadioButton shortestButton = new JRadioButton("Short path", false);
         JButton easyButton = new JButton("Easy");
         JButton mediumButton = new JButton("Medium");
         JButton hardButton = new JButton("Hard");
         JButton extremeButton = new JButton("Extreme");
-    
         
-        //adding buttons to frame
+
+        // adding buttons to frame
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JPanel loadPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        loadPanel.add(loadOldGameButton);
+        buttonPanel.add(loadPanel);
+        buttonPanel.add(textAboutAlgorithm);
+        buttonPanel.add(randomButton);
+        buttonPanel.add(shortestButton);
         buttonPanel.add(easyButton);
         buttonPanel.add(mediumButton);
         buttonPanel.add(hardButton);
         buttonPanel.add(extremeButton);
         buttonPanel.setBorder(BorderFactory.createBevelBorder(0));
-        buttonPanel.setPreferredSize(new Dimension(400,200));
+        buttonPanel.setPreferredSize(new Dimension(400, 200));
         JPanel wrapButtons = new JPanel();
         wrapButtons.setLayout(new FlowLayout());
         wrapButtons.add(buttonPanel);
         this.setLayout(new BorderLayout());
-        this.add(wrapButtons,BorderLayout.SOUTH);
+        this.add(wrapButtons, BorderLayout.SOUTH);
 
-        //adding the picture
+        // adding the picture
         ImageIcon originalIcon = new ImageIcon("C:/Users/Rea/Downloads/CatTrap/Penguin Trap.png");
         Image scaledImage = originalIcon.getImage().getScaledInstance(400, 300, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
-        JLabel imageLabel = new JLabel(resizedIcon); 
+        JLabel imageLabel = new JLabel(resizedIcon);
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imageLabel.setVerticalAlignment(SwingConstants.CENTER);
         this.add(imageLabel, BorderLayout.CENTER);
 
-        //callbacks
+        // callbacks
         easyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -57,7 +68,6 @@ public class Frame extends JPanel implements MouseListener {
                 startGame();
             }
         });
-
 
         mediumButton.addActionListener(new ActionListener() {
             @Override
@@ -67,7 +77,6 @@ public class Frame extends JPanel implements MouseListener {
             }
         });
 
-
         hardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -75,7 +84,6 @@ public class Frame extends JPanel implements MouseListener {
                 startGame();
             }
         });
-
 
         extremeButton.addActionListener(new ActionListener() {
             @Override
@@ -88,18 +96,17 @@ public class Frame extends JPanel implements MouseListener {
         frame.setVisible(true);
     }
 
-    private void startGame(){
-        //game start
+    private void startGame() {
+        // game start
         // Clear all components in the frame
         frame.getContentPane().removeAll();
 
-
-        System.out.println("WTF "+frame.getContentPane().getComponentCount());
+        System.out.println("WTF " + frame.getContentPane().getComponentCount());
         this.g = new Game();
 
         frame.getContentPane().add(g);
         frame.getContentPane().addMouseListener(this);
-        System.out.println("WTF "+frame.getContentPane().getComponentCount());
+        System.out.println("WTF " + frame.getContentPane().getComponentCount());
         frame.setVisible(true);
         frame.revalidate();
     }
@@ -129,6 +136,5 @@ public class Frame extends JPanel implements MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
-
 
 }
