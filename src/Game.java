@@ -49,67 +49,49 @@ public class Game extends JComponent {
 
     }
 
+    public boolean isCenter(int x, int y){
+        return x==Game.boardSize/2+1 && y==Game.boardSize/2+1;
+    }
+
     public void recolorSome() {
         if (State.getDifficulty() == Difficulty.EASY || State.getDifficulty()==Difficulty.MEDIUM) {
             int numberOfPainted = generateRandom(12, 16);
             while (numberOfPainted != 0) {
                 Tile colored = tiles.get(generateRandom(0, boardSize - 1)).get(generateRandom(0, boardSize - 1));
-                if (colored.getXindex() == (boardSize - 1) / 2 && colored.getYindex() == (boardSize - 1) / 2)
-                    colored.setState(State.FIRST);
-                else {
+                if (!isCenter(colored.getXindex(), colored.getYindex())) {
                     colored.setState(State.FINAL);
+                    numberOfPainted--;
                 }
-                numberOfPainted--;
             }
         }
-        if (State.getDifficulty() == Difficulty.HARD) {
+        else if (State.getDifficulty() == Difficulty.HARD) {
             int numberOfPainted = generateRandom(16, 20);
             while (numberOfPainted != 0) {
                 Tile colored = tiles.get(generateRandom(0, boardSize - 1)).get(generateRandom(0, boardSize - 1));
-                int colorTo = generateRandom(0, 9);
-                if (colored.getXindex() == (boardSize - 1) / 2 && colored.getYindex() == (boardSize - 1) / 2)
-                    colored.setState(State.FIRST);
-                else {
-                    if (colorTo % 3 == 1)
+                int colorTo = generateRandom(0, 2);
+                if (!isCenter(colored.getXindex(), colored.getYindex())) {
+                    if (colorTo == 1)
                         colored.setState(State.SECOND);
-                    if (colorTo % 3 == 2)
+                    if (colorTo == 2)
                         colored.setState(State.THIRD);
                     else 
                         colored.setState(State.FINAL);
+                    numberOfPainted--;
                 }
-                numberOfPainted--;
             }
         }
-        if (State.getDifficulty() == Difficulty.HARD) {
-            int numberOfPainted = generateRandom(16, 20);
-            while (numberOfPainted != 0) {
-                Tile colored = tiles.get(generateRandom(0, boardSize - 1)).get(generateRandom(0, boardSize - 1));
-                int colorTo = generateRandom(0, 9);
-                if (colored.getXindex() == (boardSize - 1) / 2 && colored.getYindex() == (boardSize - 1) / 2)
-                    colored.setState(State.FIRST);
-                else {
-                    if (colorTo % 2 == 1)
-                        colored.setState(State.SECOND);
-                    else
-                        colored.setState(State.FINAL);
-                }
-                numberOfPainted--;
-            }
-        }
-        if (State.getDifficulty() == Difficulty.HARDER) {
+        else if (State.getDifficulty() == Difficulty.HARDER) {
             int numberOfPainted = generateRandom(20, 27);
             while (numberOfPainted != 0) {
                 Tile colored = tiles.get(generateRandom(0, boardSize - 1)).get(generateRandom(0, boardSize - 1));
-                int colorTo = generateRandom(0, 9);
-                if (colored.getXindex() == (boardSize - 1) / 2 && colored.getYindex() == (boardSize - 1) / 2)
-                    colored.setState(State.FIRST);
-                else {
-                    if (colorTo % 2 == 1)
+                int colorTo = generateRandom(0, 1);
+                if (!isCenter(colored.getXindex(), colored.getYindex())) {
+                    if (colorTo == 1)
                         colored.setState(State.SECOND);
                     else
                         colored.setState(State.THIRD);
+                    numberOfPainted--;
                 }
-                numberOfPainted--;
             }
         }
     }
@@ -126,7 +108,88 @@ public class Game extends JComponent {
 
     public int generateRandom(int min, int max) {
         Random r = new Random();
-        int result = r.nextInt(max - min) + min;
+        int result = r.nextInt((max - min) + 1) + min;
         return result;
+    }
+
+    public Tile getTile(int x, int y) {
+        return tiles.get(x).get(y);
+    }
+
+    public List<Tile> getNeighbours(int x, int y){
+        List<Tile> neighbours = new ArrayList<>();
+        if(x==0){ //elso sor
+            if(y==0){ //bal sarok
+                neighbours.add(tiles.get(x).get(y+1));
+                neighbours.add(tiles.get(x+1).get(y));
+            }else if(y==boardSize-1){ //jobb sarok
+                neighbours.add(tiles.get(x+1).get(y));
+                neighbours.add(tiles.get(x+1).get(y-1));
+                neighbours.add(tiles.get(x).get(y-1));
+            }else{ // elso sor
+                neighbours.add(tiles.get(x).get(y+1));
+                neighbours.add(tiles.get(x+1).get(y));
+                neighbours.add(tiles.get(x+1).get(y-1));
+                neighbours.add(tiles.get(x).get(y-1));
+            }
+        }else if(x==boardSize-1){ //utolso sor
+            if(y==0){ //bal sarok
+                neighbours.add(tiles.get(x-1).get(y));
+                neighbours.add(tiles.get(x).get(y+1));
+            }else if(y==boardSize-1){ //jobb sarok
+                neighbours.add(tiles.get(x-1).get(y));
+                neighbours.add(tiles.get(x).get(y-1));
+                neighbours.add(tiles.get(x-1).get(y-1));
+            }else{ //utolso sor
+                neighbours.add(tiles.get(x-1).get(y));
+                neighbours.add(tiles.get(x).get(y+1));
+                neighbours.add(tiles.get(x).get(y-1));
+                neighbours.add(tiles.get(x-1).get(y-1));
+            }
+        }else if(y==0){ //bal oszlop
+            if(x%2==0){
+                neighbours.add(tiles.get(x-1).get(y));
+                neighbours.add(tiles.get(x).get(y+1));
+                neighbours.add(tiles.get(x+1).get(y));
+            }
+            else{
+                neighbours.add(tiles.get(x-1).get(y+1));
+                neighbours.add(tiles.get(x).get(y+1));
+                neighbours.add(tiles.get(x+1).get(y+1));
+                neighbours.add(tiles.get(x+1).get(y));
+                neighbours.add(tiles.get(x-1).get(y));
+            }
+        }else if(y==boardSize-1){ //jobb oszlop
+            if(x%2==0){
+                neighbours.add(tiles.get(x-1).get(y));
+                neighbours.add(tiles.get(x+1).get(y));
+                neighbours.add(tiles.get(x+1).get(y-1));
+                neighbours.add(tiles.get(x).get(y-1));
+                neighbours.add(tiles.get(x-1).get(y-1));
+            }
+            else{
+                neighbours.add(tiles.get(x+1).get(y));
+                neighbours.add(tiles.get(x).get(y-1));
+                neighbours.add(tiles.get(x-1).get(y));
+            }
+        }else{ //tobbi
+            if(x%2==0){
+                neighbours.add(tiles.get(x-1).get(y));
+                neighbours.add(tiles.get(x).get(y+1));
+                neighbours.add(tiles.get(x+1).get(y));
+                neighbours.add(tiles.get(x+1).get(y-1));
+                neighbours.add(tiles.get(x).get(y-1));
+                neighbours.add(tiles.get(x-1).get(y-1));
+            }else{
+                neighbours.add(tiles.get(x-1).get(y+1));
+                neighbours.add(tiles.get(x).get(y+1));
+                neighbours.add(tiles.get(x+1).get(y+1));
+                neighbours.add(tiles.get(x+1).get(y));
+                neighbours.add(tiles.get(x).get(y-1));
+                neighbours.add(tiles.get(x-1).get(y));
+            }
+        }
+
+        return neighbours;
     }
 }

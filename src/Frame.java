@@ -25,6 +25,9 @@ public class Frame extends JPanel implements MouseListener {
         JTextField textAboutAlgorithm = new JTextField("Choose algorithm for the Penguin!");
         JRadioButton randomButton = new JRadioButton("Random", true);
         JRadioButton shortestButton = new JRadioButton("Short path", false);
+        ButtonGroup radioGroup = new ButtonGroup();
+        radioGroup.add(randomButton);
+        radioGroup.add(shortestButton);
         JButton easyButton = new JButton("Easy");
         JButton mediumButton = new JButton("Medium");
         JButton hardButton = new JButton("Hard");
@@ -49,7 +52,7 @@ public class Frame extends JPanel implements MouseListener {
         this.add(wrapButtons, BorderLayout.SOUTH);
 
         // adding the picture
-        ImageIcon originalIcon = new ImageIcon("C:/Users/Rea/Downloads/CatTrap/Penguin Trap.png");
+        ImageIcon originalIcon = new ImageIcon("assets/logo.png");
         Image scaledImage = originalIcon.getImage().getScaledInstance(400, 300, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
         JLabel imageLabel = new JLabel(resizedIcon);
