@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 
 public class Frame extends JPanel implements MouseListener {
     private Game g;
@@ -65,7 +66,11 @@ public class Frame extends JPanel implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 State.setDifficulty(Difficulty.EASY);
-                startGame();
+                try {
+                    startGame();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -73,7 +78,11 @@ public class Frame extends JPanel implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 State.setDifficulty(Difficulty.MEDIUM);
-                startGame();
+                try {
+                    startGame();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -81,7 +90,11 @@ public class Frame extends JPanel implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 State.setDifficulty(Difficulty.HARD);
-                startGame();
+                try {
+                    startGame();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -89,31 +102,37 @@ public class Frame extends JPanel implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 State.setDifficulty(Difficulty.HARDER);
-                startGame();
+                try {
+                    startGame();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
         frame.setVisible(true);
     }
 
-    private void startGame() {
+    private void startGame() throws IOException {
         // game start
         // Clear all components in the frame
         frame.getContentPane().removeAll();
 
-        System.out.println("WTF " + frame.getContentPane().getComponentCount());
         this.g = new Game();
 
         frame.getContentPane().add(g);
         frame.getContentPane().addMouseListener(this);
-        System.out.println("WTF " + frame.getContentPane().getComponentCount());
         frame.setVisible(true);
         frame.revalidate();
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        g.mouseClicked(e);
+        try {
+            g.mouseClicked(e);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
         this.frame.repaint();
     }
 

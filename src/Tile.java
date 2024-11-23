@@ -6,9 +6,9 @@ import javax.swing.JComponent;
 public class Tile extends Polygon {
     private final int r; // atlo
     private final int middlePointX, middlePointY; // kozeppontok
-    State state; // allapot(szin)
-    public int x;
-    public int y; // indexek
+    private State state; // allapot(szin)
+    private int x;
+    private int y; // indexek
 
     /*
      * public Tile() {
@@ -18,10 +18,12 @@ public class Tile extends Polygon {
      * }
      */
 
-    public Tile(int middlePointX, int middlePointY, int r) {
+    public Tile(int middlePointX, int middlePointY, int r, int x, int y) {
         this.middlePointX = middlePointX;
         this.middlePointY = middlePointY;
         this.r = r;
+        this.x = x;
+        this.y = y;
         this.state = State.FIRST; // a legvilagosabb
         int[] coordsX = new int[6];
         int[] coordsY = new int[6];
@@ -105,6 +107,11 @@ public class Tile extends Polygon {
         }
     }
 
-
+    public int getMiddlePointX(){
+        return this.middlePointX;
+    }
+    public int getMiddlePointY(){
+        return this.middlePointY;
+    }
 
 }
