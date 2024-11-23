@@ -34,6 +34,10 @@ public class Game extends JComponent {
         penguin=new Penguin(tiles.get(Game.boardSize/2).get(Game.boardSize/2));
     }
 
+    public GameState getGameState() {
+        return gameState;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -122,10 +126,6 @@ public class Game extends JComponent {
         Random r = new Random();
         int result = r.nextInt((max - min) + 1) + min;
         return result;
-    }
-
-    public Tile getTile(int x, int y) {
-        return tiles.get(x).get(y);
     }
 
     public List<Tile> getNeighbours(int x, int y){

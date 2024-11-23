@@ -9,8 +9,10 @@ import java.io.IOException;
 public class Frame extends JPanel implements MouseListener {
     private Game g;
     private JFrame frame;
+    private boolean restart;
 
     Frame() {
+        restart=false;
         this.frame = new JFrame("Penguin Trap");
         frame.setSize(800, 650);
         frame.setLocationRelativeTo(null);
@@ -128,12 +130,45 @@ public class Frame extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        try {
-            g.mouseClicked(e);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+        if(this.g.getGameState()==GameState.IN_PROGRESS) {
+            try {
+                g.mouseClicked(e);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            this.frame.repaint();
         }
-        this.frame.repaint();
+
+        if(this.g.getGameState()!=GameState.IN_PROGRESS) {
+            if (this.restart) {
+                try {
+                    this.restart = false;
+                    startGame();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            } else {
+                drawEndScreen(this.g.getGameState());
+                this.restart = true;
+            }
+        }
+    }
+
+    void drawEndScreen(GameState state) {
+        this.removeAll();
+        frame.getContentPane().removeAll();
+        JTextField text;
+        if(state==GameState.LOST) {
+             text= new JTextField("Lost");
+        }else {
+            text = new JTextField("Won");
+        }
+        text.setEditable(false);
+        this.add(text);
+        frame.add(this);
+        //frame.setVisible(true);
+        frame.revalidate();
+        frame.repaint();
     }
 
     @Override
