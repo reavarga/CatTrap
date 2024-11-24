@@ -25,7 +25,7 @@ public class Frame extends JPanel implements MouseListener {
     private void drawStartScreen() {
         // frame.setLayout(new FlowLayout());
         JButton loadOldGameButton= new JButton("Load an older game!");
-        JTextField textAboutAlgorithm = new JTextField("Choose algorithm for the Penguin!");
+        JLabel textAboutAlgorithm = new JLabel("Choose algorithm for the Penguin!");
         JRadioButton randomButton = new JRadioButton("Random", true);
         JRadioButton shortestButton = new JRadioButton("Short path", false);
         ButtonGroup radioGroup = new ButtonGroup();
@@ -157,19 +157,60 @@ public class Frame extends JPanel implements MouseListener {
     void drawEndScreen(GameState state) {
         this.removeAll();
         frame.getContentPane().removeAll();
-        JTextField text;
+        JLabel text;
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         if(state==GameState.LOST) {
-             text= new JTextField("Lost");
+             text= new JLabel("You Lost!");
+             text.setFont(new Font("Arial",Font.BOLD,42));
         }else {
-            text = new JTextField("Won");
+            text = new JLabel(" You Won!");
+            text.setFont(new Font("Arial",Font.BOLD,42));
         }
-        text.setEditable(false);
-        this.add(text);
-        frame.add(this);
-        //frame.setVisible(true);
-        frame.revalidate();
-        frame.repaint();
-    }
+        text.setHorizontalAlignment(JLabel.CENTER); // Center the text horizontally
+        text.setVerticalAlignment(JLabel.CENTER);   // Center the text vertically
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 0, 20, 0); // Add some spacing
+        mainPanel.add(text, gbc);
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)); // Center buttons with spacing
+        JButton newGameButton = new JButton("New Game");
+        JButton saveProgressButton = new JButton("Save Progress");
+        JButton exitButton = new JButton("Exit");
+
+        buttonPanel.add(newGameButton);
+        buttonPanel.add(saveProgressButton);
+        buttonPanel.add(exitButton);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.insets = new Insets(20, 0, 10, 0); // Add spacing above the buttons
+        mainPanel.add(buttonPanel, gbc);
+
+        // Add the main panel to the frame
+        frame.add(mainPanel, BorderLayout.CENTER);
+   
+       // Refresh the frame to apply changes
+       frame.revalidate();
+       frame.repaint();
+       
+    
+
+       newGameButton.addActionListener(e -> {
+        this.removeAll();
+        frame.getContentPane().removeAll();
+        System.out.println("New Game button clicked!");
+       // drawStartScreen(); // Start a new game
+        
+    });
+
+
+    exitButton.addActionListener(e -> {
+        //System.out.println("Exit button clicked!");
+        System.exit(0); 
+    });
+}
 
     @Override
     public void mousePressed(MouseEvent e) {
