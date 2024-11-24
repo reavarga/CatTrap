@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Game extends JComponent {
-    static public final int boardSize = 7;
+    static public final int boardSize = 11;
     static public final int r = 25;
     static public final int offset = 7;
     private List<List<Tile>> tiles;
@@ -25,7 +25,7 @@ public class Game extends JComponent {
                 int a = (int) Math.sqrt(Math.pow(r, 2) - Math.pow(((double) r) / 2, 2));
                 int nextValX = j * (2 * a + offset) + a + i % 2 * (a + offset / 2);
                 int nextValY = i * ((int) (1.5 * r + Math.sqrt(Math.pow(offset, 2) - Math.pow(((double) offset / 2), 2))));
-                tileRow.add(new Tile(100 + nextValX, 100 + nextValY, r, i, j));
+                tileRow.add(new Tile(400-(boardSize-1)/2*57 + nextValX, 325-(boardSize-1)/2*57+28 + nextValY, r, i, j));
 
             }
             this.tiles.add(tileRow);

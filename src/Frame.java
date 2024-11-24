@@ -40,13 +40,17 @@ public class Frame extends JPanel implements MouseListener {
         frame.getContentPane().removeAll();
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        JLabel cScore=new JLabel("Current Score: "+currentScore, JLabel.CENTER);
-        JLabel mScore=new JLabel("Max Score: "+maxScore, JLabel.CENTER);
+        JLabel cScore=new JLabel("Current Score: "+currentScore);
+        JLabel mScore=new JLabel("Max Score: "+maxScore);
+        JPanel scorePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         this.g = new Game();
         //this.g.add(cScore);
         //this.g.add(mScore);
-        panel.add(cScore, BorderLayout.EAST);
-        panel.add(mScore, BorderLayout.SOUTH);
+        scorePanel.add(cScore, BorderLayout.CENTER);
+        scorePanel.add(mScore, BorderLayout.CENTER);
+        scorePanel.setPreferredSize(new Dimension(200,30));
+        scorePanel.setBorder(BorderFactory.createBevelBorder(0));
+        panel.add(scorePanel, BorderLayout.SOUTH);
         panel.add(this.g);
         frame.getContentPane().add(panel);
 
