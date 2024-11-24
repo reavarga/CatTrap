@@ -9,10 +9,8 @@ import java.io.IOException;
 public class Frame extends JPanel implements MouseListener {
     private Game g;
     private JFrame frame;
-    private boolean restart;
 
     Frame() {
-        restart=false;
         this.frame = new JFrame("Penguin Trap");
         frame.setSize(800, 650);
         frame.setLocationRelativeTo(null);
@@ -20,6 +18,21 @@ public class Frame extends JPanel implements MouseListener {
         frame.add(this);
         // start screen
         drawStartScreen();
+    }
+
+
+
+    private void startGame() throws IOException {
+        // game start
+        // Clear all components in the frame
+        frame.getContentPane().removeAll();
+
+        this.g = new Game();
+
+        frame.getContentPane().add(g);
+        frame.getContentPane().addMouseListener(this);
+        frame.setVisible(true);
+        frame.revalidate();
     }
 
     private void drawStartScreen() {
@@ -35,7 +48,7 @@ public class Frame extends JPanel implements MouseListener {
         JButton mediumButton = new JButton("Medium");
         JButton hardButton = new JButton("Hard");
         JButton extremeButton = new JButton("Extreme");
-        
+
 
         // adding buttons to frame
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
@@ -115,48 +128,10 @@ public class Frame extends JPanel implements MouseListener {
         frame.setVisible(true);
     }
 
-    private void startGame() throws IOException {
-        // game start
-        // Clear all components in the frame
-        frame.getContentPane().removeAll();
-
-        this.g = new Game();
-
-        frame.getContentPane().add(g);
-        frame.getContentPane().addMouseListener(this);
-        frame.setVisible(true);
-        frame.revalidate();
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if(this.g.getGameState()==GameState.IN_PROGRESS) {
-            try {
-                g.mouseClicked(e);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            this.frame.repaint();
-        }
-
-        if(this.g.getGameState()!=GameState.IN_PROGRESS) {
-            if (this.restart) {
-                try {
-                    this.restart = false;
-                    startGame();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            } else {
-                drawEndScreen(this.g.getGameState());
-                this.restart = true;
-            }
-        }
-    }
-
-    void drawEndScreen(GameState state) {
+    private void drawEndScreen(GameState state) {
         this.removeAll();
         frame.getContentPane().removeAll();
+        frame.getContentPane().removeMouseListener(this);
         JLabel text;
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -197,20 +172,41 @@ public class Frame extends JPanel implements MouseListener {
        
     
 
-       newGameButton.addActionListener(e -> {
-        this.removeAll();
-        frame.getContentPane().removeAll();
-        System.out.println("New Game button clicked!");
-       // drawStartScreen(); // Start a new game
-        
-    });
+       newGameButton.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               try {
+                   startGame();
+               } catch (IOException ex) {
+                   throw new RuntimeException(ex);
+               }
+           }
+       });
 
 
-    exitButton.addActionListener(e -> {
-        //System.out.println("Exit button clicked!");
-        System.exit(0); 
+    exitButton.addActionListener(new ActionListener() {
+       @Override
+       public void actionPerformed(ActionEvent e) {
+           System.exit(0);
+       }
     });
 }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if(this.g.getGameState()==GameState.IN_PROGRESS) {
+            try {
+                g.mouseClicked(e);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            this.frame.repaint();
+        }
+
+        if(this.g.getGameState()!=GameState.IN_PROGRESS) {
+            drawEndScreen(this.g.getGameState());
+        }
+    }
 
     @Override
     public void mousePressed(MouseEvent e) {
