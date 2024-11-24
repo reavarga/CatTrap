@@ -4,13 +4,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class Frame extends JPanel implements MouseListener {
     private Game g;
     private JFrame frame;
+    private int maxScore;
+    private int currentScore;
 
     Frame() {
+        this.maxScore=0;
+        this.currentScore=0;
         this.frame = new JFrame("Penguin Trap");
         frame.setSize(800, 650);
         frame.setLocationRelativeTo(null);
@@ -20,16 +26,30 @@ public class Frame extends JPanel implements MouseListener {
         drawStartScreen();
     }
 
+    public void setMaxScore(int maxScore) {
+        this.maxScore = maxScore;
+    }
 
+    public void setCurrentScore(int currentScore) {
+        this.currentScore = currentScore;
+    }
 
-    private void startGame() throws IOException {
+    public void startGame() throws IOException {
         // game start
         // Clear all components in the frame
         frame.getContentPane().removeAll();
-
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        JLabel cScore=new JLabel("Current Score: "+currentScore, JLabel.CENTER);
+        JLabel mScore=new JLabel("Max Score: "+maxScore, JLabel.CENTER);
         this.g = new Game();
+        //this.g.add(cScore);
+        //this.g.add(mScore);
+        panel.add(cScore, BorderLayout.EAST);
+        panel.add(mScore, BorderLayout.SOUTH);
+        panel.add(this.g);
+        frame.getContentPane().add(panel);
 
-        frame.getContentPane().add(g);
         frame.getContentPane().addMouseListener(this);
         frame.setVisible(true);
         frame.revalidate();
@@ -37,7 +57,6 @@ public class Frame extends JPanel implements MouseListener {
 
     private void drawStartScreen() {
         // frame.setLayout(new FlowLayout());
-        JButton loadOldGameButton= new JButton("Load an older game!");
         JLabel textAboutAlgorithm = new JLabel("Choose algorithm for the Penguin!");
         JRadioButton randomButton = new JRadioButton("Random", true);
         JRadioButton shortestButton = new JRadioButton("Short path", false);
@@ -48,6 +67,7 @@ public class Frame extends JPanel implements MouseListener {
         JButton mediumButton = new JButton("Medium");
         JButton hardButton = new JButton("Hard");
         JButton extremeButton = new JButton("Extreme");
+        JButton loadButton = new JButton("Continue old game!");
 
 
         // adding buttons to frame
@@ -59,6 +79,7 @@ public class Frame extends JPanel implements MouseListener {
         buttonPanel.add(mediumButton);
         buttonPanel.add(hardButton);
         buttonPanel.add(extremeButton);
+        buttonPanel.add(loadButton);
         buttonPanel.setBorder(BorderFactory.createBevelBorder(0));
         buttonPanel.setPreferredSize(new Dimension(400, 200));
         JPanel wrapButtons = new JPanel();
@@ -125,10 +146,25 @@ public class Frame extends JPanel implements MouseListener {
             }
         });
 
+        loadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    LeaderBoard board= new LeaderBoard();
+                    String name = JOptionPane.showInputDialog(null, "Enter your name:", "Input Dialog", JOptionPane.QUESTION_MESSAGE);
+                    board.readEntry(name, Frame.this);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            }
+        });
+
         frame.setVisible(true);
     }
 
     private void drawEndScreen(GameState state) {
+
         this.removeAll();
         frame.getContentPane().removeAll();
         frame.getContentPane().removeMouseListener(this);
@@ -137,11 +173,16 @@ public class Frame extends JPanel implements MouseListener {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         if(state==GameState.LOST) {
-             text= new JLabel("You Lost!");
-             text.setFont(new Font("Arial",Font.BOLD,42));
+            this.currentScore=0;
+            text= new JLabel("You Lost!");
+            text.setFont(new Font("Arial",Font.BOLD,42));
         }else {
+            this.currentScore++;
             text = new JLabel(" You Won!");
             text.setFont(new Font("Arial",Font.BOLD,42));
+        }
+        if(this.currentScore>this.maxScore){
+            this.maxScore=this.currentScore;
         }
         text.setHorizontalAlignment(JLabel.CENTER); // Center the text horizontally
         text.setVerticalAlignment(JLabel.CENTER);   // Center the text vertically
@@ -190,7 +231,24 @@ public class Frame extends JPanel implements MouseListener {
            System.exit(0);
        }
     });
-}
+
+    saveProgressButton.addActionListener(new ActionListener() {
+       @Override
+       public void actionPerformed(ActionEvent e) {
+           if(currentScore>maxScore){
+               maxScore=currentScore;
+           }
+           String name = JOptionPane.showInputDialog(null, "Enter your name:", "Input Dialog", JOptionPane.QUESTION_MESSAGE);
+           try {
+               LeaderBoard board=new LeaderBoard();
+               board.newEntry(name, State.getDifficulty(),maxScore,currentScore);
+           } catch (IOException ex) {
+               throw new RuntimeException(ex);
+           }
+
+       }
+    });
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {
