@@ -4,11 +4,11 @@ import java.awt.*;
 import javax.swing.JComponent;
 
 public class Tile extends Polygon {
-    private final int r; // atlo
-    private final int middlePointX, middlePointY; // kozeppontok
-    private State state; // allapot(szin)
+    private final int r; // radius
+    private final int middlePointX, middlePointY; // the middle points
+    private State state; // a.k.a the color
     private int x;
-    private int y; // indexek
+    private int y; // indexes in the 2D arraylist
 
     /*
      * public Tile() {
@@ -18,13 +18,21 @@ public class Tile extends Polygon {
      * }
      */
 
+/**
+ * calculates all six points of the tile based on the middle point and the radius
+ * @param middlePointX middle point
+ * @param middlePointY middle point
+ * @param r radius
+ * @param x index
+ * @param y index
+ */
     public Tile(int middlePointX, int middlePointY, int r, int x, int y) {
         this.middlePointX = middlePointX;
         this.middlePointY = middlePointY;
         this.r = r;
         this.x = x;
         this.y = y;
-        this.state = State.FIRST; // a legvilagosabb
+        this.state = State.FIRST;
         int[] coordsX = new int[6];
         int[] coordsY = new int[6];
 
@@ -50,6 +58,14 @@ public class Tile extends Polygon {
         }
     }
 
+
+/**
+ * determines if a point is inside of a polygon by dividing the hexagon into six triangles and calculating the barycentryc coordinates
+ * if every single one of the coordinates is between 0 and 1 returns true
+ * @param x 
+ * @param y
+ * @return
+ */
     public boolean containsPoint(int x, int y) {
         for (int i = 0; i < 6; i++) {
             double denominator = ((ypoints[(i + 1) % 6] - middlePointY) * (xpoints[i] - middlePointX)
@@ -66,6 +82,27 @@ public class Tile extends Polygon {
         }
         return false;
     }
+
+    public void nextRound(boolean clicked) {
+        if (this.state != State.FINAL) {
+            if (clicked) {
+                if (!(State.getDifficulty() == Difficulty.HARDER && this.state == State.THIRD)) {
+                    int nextState = (this.state.ordinal() + 1 + State.availableValues().length)
+                            % State.availableValues().length;
+                    this.state = State.availableValues()[nextState];
+                }
+            } else if (this.state != State.FIRST) {
+                int nextState = (this.state.ordinal() - 1 + State.availableValues().length)
+                        % State.availableValues().length;
+                this.state = State.availableValues()[nextState];
+            }
+        }
+    }
+
+
+/**
+ * some getters and setters
+ */
 
     public State getState() {
         return this.state;
@@ -89,22 +126,6 @@ public class Tile extends Polygon {
 
     public void setYindex(int y) {
         this.y = y;
-    }
-
-    public void nextRound(boolean clicked) {
-        if (this.state != State.FINAL) {
-            if (clicked) {
-                if (!(State.getDifficulty() == Difficulty.HARDER && this.state == State.THIRD)) {
-                    int nextState = (this.state.ordinal() + 1 + State.availableValues().length)
-                            % State.availableValues().length;
-                    this.state = State.availableValues()[nextState];
-                }
-            } else if (this.state != State.FIRST) {
-                int nextState = (this.state.ordinal() - 1 + State.availableValues().length)
-                        % State.availableValues().length;
-                this.state = State.availableValues()[nextState];
-            }
-        }
     }
 
     public int getMiddlePointX(){

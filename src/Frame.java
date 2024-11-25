@@ -14,6 +14,10 @@ public class Frame extends JPanel implements MouseListener {
     private int maxScore;
     private int currentScore;
 
+
+/**
+ * sets the scores to zero and makes the frame
+ */
     Frame() {
         this.maxScore=0;
         this.currentScore=0;
@@ -25,14 +29,24 @@ public class Frame extends JPanel implements MouseListener {
         // start screen
         drawStartScreen();
     }
-
+/**
+ * sets the maxscore
+ * @param maxScore to this
+ */
     public void setMaxScore(int maxScore) {
         this.maxScore = maxScore;
     }
-
+/**
+ * sets the current score
+ * @param currentScore
+ */
     public void setCurrentScore(int currentScore) {
         this.currentScore = currentScore;
     }
+/**
+ * starts a game by first clearing a screen and then ads the scores to the bottom and adds the game
+ * @throws IOException
+ */
 
     public void startGame() throws IOException {
         // game start
@@ -59,6 +73,11 @@ public class Frame extends JPanel implements MouseListener {
         frame.revalidate();
     }
 
+
+/**
+ * draws the starter screen for the game with the logo and buttons
+ * has actionListeners for the buttons
+ */
     private void drawStartScreen() {
         // frame.setLayout(new FlowLayout());
         JLabel textAboutAlgorithm = new JLabel("Choose algorithm for the Penguin!");
@@ -166,7 +185,13 @@ public class Frame extends JPanel implements MouseListener {
 
         frame.setVisible(true);
     }
-
+/**
+ * draws the enscreen when the gamestate is set to won or lost
+ * first removes everything then tells if the player won or lost 
+ * then offers new game, save score or exit
+ * ha actionlisteners for the buttons
+ * @param state
+ */
     private void drawEndScreen(GameState state) {
 
         this.removeAll();
@@ -188,13 +213,13 @@ public class Frame extends JPanel implements MouseListener {
         if(this.currentScore>this.maxScore){
             this.maxScore=this.currentScore;
         }
-        text.setHorizontalAlignment(JLabel.CENTER); // Center the text horizontally
-        text.setVerticalAlignment(JLabel.CENTER);   // Center the text vertically
+        text.setHorizontalAlignment(JLabel.CENTER); 
+        text.setVerticalAlignment(JLabel.CENTER);  
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(10, 0, 20, 0); // Add some spacing
+        gbc.insets = new Insets(10, 0, 20, 0); 
         mainPanel.add(text, gbc);
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)); // Center buttons with spacing
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)); 
         JButton newGameButton = new JButton("New Game");
         JButton saveProgressButton = new JButton("Save Progress");
         JButton exitButton = new JButton("Exit");
@@ -205,13 +230,10 @@ public class Frame extends JPanel implements MouseListener {
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.insets = new Insets(20, 0, 10, 0); // Add spacing above the buttons
+        gbc.insets = new Insets(20, 0, 10, 0); 
         mainPanel.add(buttonPanel, gbc);
 
-        // Add the main panel to the frame
         frame.add(mainPanel, BorderLayout.CENTER);
-   
-       // Refresh the frame to apply changes
        frame.revalidate();
        frame.repaint();
        

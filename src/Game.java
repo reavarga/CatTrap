@@ -7,14 +7,21 @@ import java.util.List;
 import java.util.Random;
 
 public class Game extends JComponent {
-    static public final int boardSize = 11;
-    static public final int r = 25;
-    static public final int offset = 7;
-    private List<List<Tile>> tiles;
-    private GameState gameState;
+    static public final int boardSize = 9; //how many tiles/row or coloumb
+    static public final int r = 25; //radius of a hexagon
+    static public final int offset = 7; //spacing between the tiles
+    private List<List<Tile>> tiles; //2D list of tiles
+    private GameState gameState; 
     private Penguin penguin;
     private Algorithm algorithm;
 
+
+/**
+ *stats the game, puts the gameStato to in progress, makes the tiles by rows first then stacks them
+then takes some of the tiles and recolors them according to the difficulty
+ads the penguin to the middle
+ * @throws IOException
+ */
     public Game() throws IOException {
         gameState = GameState.IN_PROGRESS;
         this.tiles = new ArrayList<>();
@@ -34,10 +41,29 @@ public class Game extends JComponent {
         penguin=new Penguin(tiles.get(Game.boardSize/2).get(Game.boardSize/2));
     }
 
+
+/**
+ * gets the gamestate
+ * @return a gamestate
+ */
     public GameState getGameState() {
         return gameState;
     }
 
+
+/**
+ * sets the gamestate
+ * @param state the state to be set to
+ */
+    public void setGameState(GameState state) {
+        this.gameState = state;
+    }
+
+
+
+/**
+ * draws the board onto the screen, here changes the color and the outline and draws the penguin
+*/
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -57,14 +83,20 @@ public class Game extends JComponent {
 
     }
 
+
+/**
+ * decides if the given tile is the middle tile
+ * @param x x index in the list
+ * @param y y index in the list
+ * @return returns if the tiles given by the index are the middle
+ */
     public boolean isCenter(int x, int y){
         return x==Game.boardSize/2 && y==Game.boardSize/2;
     }
 
-    public void setGameState(GameState state) {
-        this.gameState = state;
-    }
 
+/* randomly recolors some of the tiles based on the difficulties
+ */  
     public void recolorSome() {
         if (State.getDifficulty() == Difficulty.EASY || State.getDifficulty()==Difficulty.MEDIUM) {
             int numberOfPainted = generateRandom(12, 16);
@@ -108,6 +140,12 @@ public class Game extends JComponent {
         }
     }
 
+ /**
+  * if the mouse is clicked starts the next round where the penguin moves
+  * @param e
+  * @throws IOException
+  */
+
     public void mouseClicked(MouseEvent e) throws IOException {
         if(penguin.getPos().containsPoint(e.getX(), e.getY())) {
             return;
@@ -122,12 +160,30 @@ public class Game extends JComponent {
         penguin.update();
     }
 
+/**
+ * generates random number between min and max
+* @param min 
+* @param max
+* @return a number
+*/
+     
     public static int generateRandom(int min, int max) {
         Random r = new Random();
         int result = r.nextInt((max - min) + 1) + min;
         return result;
     }
-
+//
+/**
+ * makes an arraylist based on the neighbours of a tile that is given by the indexes
+there are different occurances:
+1.the tile is one of the corners: the four corners all have different neighbours
+2. the tile is border but not corner: the even and odd indexes(based on x) have different neighbours
+3.the tile is in the middle section: the even and odd indexes (based on x) have different neighbours
+the neighbouring starts from the right in clockwork, if there is no tile there then it will be null
+ * @param x x index in the list
+ * @param y y index in the list
+ * @return an arraylist with the tile neighbours
+ */
     public List<Tile> getNeighbours(int x, int y){
         List<Tile> neighbours = new ArrayList<>();
         if(x==0){ //elso sor

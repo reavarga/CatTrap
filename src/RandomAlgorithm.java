@@ -113,7 +113,12 @@ public class RandomAlgorithm implements Algorithm{
         }
         return tmp;
     }
-
+/**
+ * 
+ * @param nextPos the next position of the penguin
+ * @param neighbours tiles around the penguin
+ * @return the next direction of the penguin
+ */
     private Direction getNewDirection(Tile nextPos, List<Tile> neighbours){
         if(neighbours.indexOf(nextPos)==0){
             return Direction.NORTH_EAST;

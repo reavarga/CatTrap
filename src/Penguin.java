@@ -8,11 +8,20 @@ public class Penguin {
     private Tile pos;
     private Direction dir;
     private BufferedImage icon;
+
+    /**
+     * Makes a penguin with the lite position, direction to the west and the given icon
+     * @param pos the tile on which the penguin stands
+     * @throws IOException
+     */
     Penguin(Tile pos) throws IOException {
         this.pos = pos;
         this.dir=Direction.WEST;
         this.icon=ImageIO.read(new File("assets/west.png"));
     }
+/**
+ * getters and setters
+ */
     public BufferedImage getIcon() {
         return icon;
     }
@@ -31,6 +40,11 @@ public class Penguin {
     public Tile getPos(){
         return pos;
     }
+
+/**
+ * updates the image based on the direction 
+ * @throws IOException
+ */
     public void update() throws IOException {
         if(dir==Direction.WEST){
             this.icon=ImageIO.read(new File("assets/west.png"));
