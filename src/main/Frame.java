@@ -1,4 +1,5 @@
 package main;
+
 import javax.swing.*;
 
 import java.awt.*;
@@ -9,21 +10,29 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+
+/**
+ * The frame the game uses for all it's graphics stuff
+ */
 
 public class Frame extends JPanel implements MouseListener {
     private Game g;
     private JFrame frame;
     private int maxScore;
     private int currentScore;
+    public HashMap<String, Algorithm> algorithms;
 
-
-/**
- * sets the scores to zero and makes the frame
- */
+    /**
+     * sets the scores to zero and makes the frame
+     */
     Frame() {
-        this.maxScore=0;
-        this.currentScore=0;
+        this.maxScore = 0;
+        this.currentScore = 0;
         this.frame = new JFrame("Penguin Trap");
+        algorithms = new HashMap<>();
+        algorithms.put("RANDOM", new RandomAlgorithm());
+        algorithms.put("SHORT", new ShortPath());
         frame.setSize(800, 650);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,39 +41,53 @@ public class Frame extends JPanel implements MouseListener {
         drawStartScreen();
     }
 /**
- * sets the maxscore
- * @param maxScore to this
+ * for the testing
+ * @return a frame
  */
+    public static Frame createInstance() {
+        return new Frame();
+    }
+
+    /**
+     * sets the maxscore
+     * 
+     * @param maxScore to this
+     */
     public void setMaxScore(int maxScore) {
         this.maxScore = maxScore;
     }
-/**
- * sets the current score
- * @param currentScore
- */
+
+    /**
+     * sets the current score
+     * 
+     * @param currentScore
+     */
     public void setCurrentScore(int currentScore) {
         this.currentScore = currentScore;
     }
-/**
- * starts a game by first clearing a screen and then ads the scores to the bottom and adds the game
- * @throws IOException
- */
 
-    public void startGame() throws IOException {
+    /**
+     * Starts by clearing the screen then adding the score labels
+     * Makes a game based on the algorithm
+     * 
+     * @param algorithm the base algorithm
+     * @throws IOException
+     */
+    public void startGame(Algorithm algorithm) throws IOException {
         // game start
         // Clear all components in the frame
         frame.getContentPane().removeAll();
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        JLabel cScore=new JLabel("Current Score: "+currentScore);
-        JLabel mScore=new JLabel("Max Score: "+maxScore);
+        JLabel cScore = new JLabel("Current Score: " + currentScore);
+        JLabel mScore = new JLabel("Max Score: " + maxScore);
         JPanel scorePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        this.g = new Game();
-        //this.g.add(cScore);
-        //this.g.add(mScore);
+        this.g = new Game(algorithm);
+        // this.g.add(cScore);
+        // this.g.add(mScore);
         scorePanel.add(cScore, BorderLayout.CENTER);
         scorePanel.add(mScore, BorderLayout.CENTER);
-        scorePanel.setPreferredSize(new Dimension(200,30));
+        scorePanel.setPreferredSize(new Dimension(200, 30));
         scorePanel.setBorder(BorderFactory.createBevelBorder(0));
         panel.add(scorePanel, BorderLayout.SOUTH);
         panel.add(this.g);
@@ -75,11 +98,10 @@ public class Frame extends JPanel implements MouseListener {
         frame.revalidate();
     }
 
-
-/**
- * draws the starter screen for the game with the logo and buttons
- * has actionListeners for the buttons
- */
+    /**
+     * draws the starter screen for the game with the logo and buttons
+     * has actionListeners for the buttons
+     */
     private void drawStartScreen() {
         // frame.setLayout(new FlowLayout());
         JLabel textAboutAlgorithm = new JLabel("Choose algorithm for the Penguin!");
@@ -93,7 +115,6 @@ public class Frame extends JPanel implements MouseListener {
         JButton hardButton = new JButton("Hard");
         JButton extremeButton = new JButton("Extreme");
         JButton loadButton = new JButton("Continue old game!");
-
 
         // adding buttons to frame
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
@@ -128,7 +149,11 @@ public class Frame extends JPanel implements MouseListener {
             public void actionPerformed(ActionEvent e) {
                 State.setDifficulty(Difficulty.EASY);
                 try {
-                    startGame();
+                    if (randomButton.isSelected()) {
+                        startGame(algorithms.get("RANDOM"));
+                    } else if (shortestButton.isSelected()) {
+                        startGame(algorithms.get("SHORT"));
+                    }
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -140,7 +165,11 @@ public class Frame extends JPanel implements MouseListener {
             public void actionPerformed(ActionEvent e) {
                 State.setDifficulty(Difficulty.MEDIUM);
                 try {
-                    startGame();
+                    if (randomButton.isSelected()) {
+                        startGame(algorithms.get("RANDOM"));
+                    } else if (shortestButton.isSelected()) {
+                        startGame(algorithms.get("SHORT"));
+                    }
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -152,7 +181,11 @@ public class Frame extends JPanel implements MouseListener {
             public void actionPerformed(ActionEvent e) {
                 State.setDifficulty(Difficulty.HARD);
                 try {
-                    startGame();
+                    if (randomButton.isSelected()) {
+                        startGame(algorithms.get("RANDOM"));
+                    } else if (shortestButton.isSelected()) {
+                        startGame(algorithms.get("SHORT"));
+                    }
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -164,7 +197,11 @@ public class Frame extends JPanel implements MouseListener {
             public void actionPerformed(ActionEvent e) {
                 State.setDifficulty(Difficulty.HARDER);
                 try {
-                    startGame();
+                    if (randomButton.isSelected()) {
+                        startGame(algorithms.get("RANDOM"));
+                    } else if (shortestButton.isSelected()) {
+                        startGame(algorithms.get("SHORT"));
+                    }
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -175,9 +212,18 @@ public class Frame extends JPanel implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    LeaderBoard board= new LeaderBoard();
-                    String name = JOptionPane.showInputDialog(null, "Enter your name:", "Input Dialog", JOptionPane.QUESTION_MESSAGE);
-                    board.readEntry(name, Frame.this);
+                    LeaderBoard board = new LeaderBoard();
+                    String name = JOptionPane.showInputDialog(null, "Enter your name:", "Input Dialog",
+                            JOptionPane.QUESTION_MESSAGE);
+                    String[] options = { "EASY", "MEDIUM", "HARD", "HARDER" };
+                    String[] Aoptions = { "RANDOM", "SHORT" };
+                    JComboBox<String> comboBox = new JComboBox<>(options);
+                    JComboBox<String> AcomboBox = new JComboBox<>(Aoptions);
+                    JOptionPane.showConfirmDialog(null, comboBox, "Select Difficulty", JOptionPane.OK_OPTION);
+                    String mode = (String) comboBox.getSelectedItem();
+                    JOptionPane.showConfirmDialog(null, AcomboBox, "Select Algorithm", JOptionPane.OK_OPTION);
+                    String algString = (String) AcomboBox.getSelectedItem();
+                    board.readEntry(name, Difficulty.valueOf(mode), algString, Frame.this);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -187,13 +233,15 @@ public class Frame extends JPanel implements MouseListener {
 
         frame.setVisible(true);
     }
-/**
- * draws the enscreen when the gamestate is set to won or lost
- * first removes everything then tells if the player won or lost 
- * then offers new game, save score or exit
- * ha actionlisteners for the buttons
- * @param state
- */
+
+    /**
+     * draws the enscreen when the gamestate is set to won or lost
+     * first removes everything then tells if the player won or lost
+     * then offers new game, save score or exit
+     * ha actionlisteners for the buttons
+     * 
+     * @param state
+     */
     private void drawEndScreen(GameState state) {
 
         this.removeAll();
@@ -203,25 +251,25 @@ public class Frame extends JPanel implements MouseListener {
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        if(state==GameState.LOST) {
-            this.currentScore=0;
-            text= new JLabel("You Lost!");
-            text.setFont(new Font("Arial",Font.BOLD,42));
-        }else {
+        if (state == GameState.LOST) {
+            this.currentScore = 0;
+            text = new JLabel("You Lost!");
+            text.setFont(new Font("Arial", Font.BOLD, 42));
+        } else {
             this.currentScore++;
             text = new JLabel(" You Won!");
-            text.setFont(new Font("Arial",Font.BOLD,42));
+            text.setFont(new Font("Arial", Font.BOLD, 42));
         }
-        if(this.currentScore>this.maxScore){
-            this.maxScore=this.currentScore;
+        if (this.currentScore > this.maxScore) {
+            this.maxScore = this.currentScore;
         }
-        text.setHorizontalAlignment(JLabel.CENTER); 
-        text.setVerticalAlignment(JLabel.CENTER);  
+        text.setHorizontalAlignment(JLabel.CENTER);
+        text.setVerticalAlignment(JLabel.CENTER);
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(10, 0, 20, 0); 
+        gbc.insets = new Insets(10, 0, 20, 0);
         mainPanel.add(text, gbc);
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)); 
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         JButton newGameButton = new JButton("New Game");
         JButton saveProgressButton = new JButton("Save Progress");
         JButton exitButton = new JButton("Exit");
@@ -232,55 +280,53 @@ public class Frame extends JPanel implements MouseListener {
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.insets = new Insets(20, 0, 10, 0); 
+        gbc.insets = new Insets(20, 0, 10, 0);
         mainPanel.add(buttonPanel, gbc);
 
         frame.add(mainPanel, BorderLayout.CENTER);
-       frame.revalidate();
-       frame.repaint();
-       
-    
+        frame.revalidate();
+        frame.repaint();
 
-       newGameButton.addActionListener(new ActionListener() {
-           @Override
-           public void actionPerformed(ActionEvent e) {
-               try {
-                   startGame();
-               } catch (IOException ex) {
-                   throw new RuntimeException(ex);
-               }
-           }
-       });
+        newGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    startGame(g.getAlgorithm());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
 
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
 
-    exitButton.addActionListener(new ActionListener() {
-       @Override
-       public void actionPerformed(ActionEvent e) {
-           System.exit(0);
-       }
-    });
+        saveProgressButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentScore > maxScore) {
+                    maxScore = currentScore;
+                }
+                String name = JOptionPane.showInputDialog(null, "Enter your name:", "Input Dialog",
+                        JOptionPane.QUESTION_MESSAGE);
+                try {
+                    LeaderBoard board = new LeaderBoard();
+                    board.newEntry(name, State.getDifficulty(), g.getAlgorithm(), maxScore, currentScore);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
 
-    saveProgressButton.addActionListener(new ActionListener() {
-       @Override
-       public void actionPerformed(ActionEvent e) {
-           if(currentScore>maxScore){
-               maxScore=currentScore;
-           }
-           String name = JOptionPane.showInputDialog(null, "Enter your name:", "Input Dialog", JOptionPane.QUESTION_MESSAGE);
-           try {
-               LeaderBoard board=new LeaderBoard();
-               board.newEntry(name, State.getDifficulty(),maxScore,currentScore);
-           } catch (IOException ex) {
-               throw new RuntimeException(ex);
-           }
-
-       }
-    });
+            }
+        });
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(this.g.getGameState()==GameState.IN_PROGRESS) {
+        if (this.g.getGameState() == GameState.IN_PROGRESS) {
             try {
                 g.mouseClicked(e);
             } catch (IOException ex) {
@@ -289,7 +335,7 @@ public class Frame extends JPanel implements MouseListener {
             this.frame.repaint();
         }
 
-        if(this.g.getGameState()!=GameState.IN_PROGRESS) {
+        if (this.g.getGameState() != GameState.IN_PROGRESS) {
             drawEndScreen(this.g.getGameState());
         }
     }

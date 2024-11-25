@@ -1,4 +1,5 @@
 package main;
+
 /**
  * enum for the gamestate
  */

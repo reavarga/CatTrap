@@ -9,15 +9,7 @@ public class Tile extends Polygon {
     private final int middlePointX, middlePointY; // the middle points
     private State state; // a.k.a the color
     private int x;
-    private int y; // indexes in the 2D arraylist
-
-    /*
-     * public Tile() {
-     * this.r=0;
-     * this.middlePoint = new Coordinate(0,0);
-     * this.free = true;
-     * }
-     */
+    private int y; // indexes in the 2D arraylist they will be in
 
 /**
  * calculates all six points of the tile based on the middle point and the radius
@@ -52,7 +44,7 @@ public class Tile extends Polygon {
         coordsY[5] = middlePointY + r / 2;
         System.out.println("Tile Coordinates:");
         for (int i = 0; i < coordsX.length; i++) {
-            System.out.println("x: " + coordsX[i] + ", y: " + coordsY[i]);
+            System.out.println("xcord: " + coordsX[i] + ", ycord: " + coordsY[i]);
         }
         for (int i = 0; i < 6; i++) {
             this.addPoint(coordsX[i], coordsY[i]);
@@ -63,27 +55,33 @@ public class Tile extends Polygon {
 /**
  * determines if a point is inside of a polygon by dividing the hexagon into six triangles and calculating the barycentryc coordinates
  * if every single one of the coordinates is between 0 and 1 returns true
- * @param x 
- * @param y
- * @return
+ * @param x index
+ * @param y index
+ * @return returns true if a point is int a hexagon
  */
-    public boolean containsPoint(int x, int y) {
-        for (int i = 0; i < 6; i++) {
-            double denominator = ((ypoints[(i + 1) % 6] - middlePointY) * (xpoints[i] - middlePointX)
-                    + (middlePointX - xpoints[(i + 1) % 6]) * (ypoints[i] - middlePointY));
-            double a = ((ypoints[(i + 1) % 6] - middlePointY) * (x - middlePointX)
-                    + (middlePointX - xpoints[(i + 1) % 6]) * (y - middlePointY)) / denominator;
-            double b = ((middlePointY - ypoints[i]) * (x - middlePointX)
-                    + (xpoints[i] - middlePointX) * (y - middlePointY)) / denominator;
-            double c = 1 - a - b;
+public boolean containsPoint(int x, int y) {
+    for (int i = 0; i < 6; i++) {
+        double denominator = ((ypoints[(i + 1) % 6] - middlePointY) * (xpoints[i] - middlePointX)
+                + (middlePointX - xpoints[(i + 1) % 6]) * (ypoints[i] - middlePointY));
+        double a = ((ypoints[(i + 1) % 6] - middlePointY) * (x - middlePointX)
+                + (middlePointX - xpoints[(i + 1) % 6]) * (y - middlePointY)) / denominator;
+        double b = ((middlePointY - ypoints[i]) * (x - middlePointX)
+                + (xpoints[i] - middlePointX) * (y - middlePointY)) / denominator;
+        double c = 1 - a - b;
 
-            if (0 <= a && a <= 1 && 0 <= b && b <= 1 && 0 <= c && c <= 1) {
-                return true;
-            }
+        if (0 <= a && a <= 1 && 0 <= b && b <= 1 && 0 <= c && c <= 1) {
+            return true;
         }
-        return false;
     }
-
+    return false;
+}
+/**
+ * It changes the state and by given the color of a tile based on what state is already in
+ * Only updates if the state is not final
+ * so it will only change the second and third ones backwards and only if the difficulty is not easy
+ * it also updates the tiles to the next state if they are clicked on and not in the third syate and harder difficulty
+ * @param clicked
+ */
     public void nextRound(boolean clicked) {
         if (this.state != State.FINAL) {
             if (clicked) {
